@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pohon Keluarga - Royal Heritage</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Playfair Display untuk kesan elegan -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome untuk Ikon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #ecfdf5 100%);
+      color: #1e293b;
+    }
+    .font-serif-elegant {
+      font-family: 'Playfair Display', serif;
+    }
+    /* Custom Scrollbar Elegan */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #059669;
+    }
+
+    /* Styling khusus untuk Mode Cetak / Print PDF */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-area, #printable-area * {
+        visibility: visible;
+      }
+      #printable-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    /* Garis Pohon Keluarga */
+    .tree-line {
+      font-family: 'Courier New', Courier, monospace;
+      line-height: 1.65;
+    }
+
+    /* Efek Glass & Gradient Elegan */
+    .royal-header {
+      background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+    }
+    .gold-accent-border {
+      border-color: rgba(217, 119, 6, 0.3);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ==================== LAYAR LOGIN USER BANI ==================== -->
+  <div id="login-screen" class="fixed inset-0 z-50 bg-gradient-to-br from-emerald-950 via-teal-900 to-slate-900 flex items-center justify-center p-4">
+    <div class="bg-white/95 backdrop-blur-md rounded-3xl max-w-md w-full p-8 shadow-2xl border border-amber-500/30 space-y-6 relative overflow-hidden">
+      <!-- Ornamen Garis Emas Atas -->
+      <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-yellow-500 to-emerald-600"></div>
+
+      <div class="text-center space-y-2 pt-2">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-800 to-teal-700 text-amber-300 flex items-center justify-center mx-auto shadow-lg border border-amber-400/40">
+          <i class="fa-solid fa-sitemap text-2xl"></i>
+        </div>
+        <h1 class="font-serif-elegant text-2xl font-bold text-slate-900 tracking-tight">Silsilah Keluarga BANI RASBUN</h1>
+        <p class="text-xs text-slate-500">Silakan masuk menggunakan akun keluarga Anda</p>
+      </div>
+
+      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">Username</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-3 text-slate-400 text-sm"><i class="fa-solid fa-user"></i></span>
+            <input type="text" id="login-username" required placeholder="Masukkan username" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-emerald-600 focus:bg-white transition">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">Password</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-3 text-slate-400 text-sm"><i class="fa-solid fa-lock"></i></span>
+            <input type="password" id="login-password" required placeholder="Masukkan password" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-10 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-emerald-600 focus:bg-white transition">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 text-sm">
+              <i id="eye-icon" class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="login-error" class="hidden bg-rose-50 border border-rose-200 text-rose-600 text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-2">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span>Username atau password salah!</span>
+        </div>
+
+        <button type="submit" class="w-full bg-gradient-to-r from-emerald-800 to-teal-700 hover:from-emerald-900 hover:to-teal-800 text-white font-semibold py-3 rounded-xl text-sm shadow-lg shadow-emerald-900/20 transition flex items-center justify-center gap-2">
+          <span>Masuk ke Silsilah</span>
+          <i class="fa-solid fa-arrow-right text-xs text-amber-300"></i>
+        </button>
+      </form>
+
+      <div class="pt-2 border-t border-slate-100 text-center">
+        <p class="text-[11px] text-slate-400">Akses Terdaftar: <span class="font-semibold text-emerald-700">Bani_Rasbun</span> &bull; Sistem Silsilah Terpadu</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== APLIKASI UTAMA ==================== -->
+  <div id="app-wrapper" class="hidden flex-1 flex flex-col">
+
+    <!-- Top Navbar Elegan -->
+    <header class="royal-header text-white shadow-md sticky top-0 z-30 no-print border-b border-amber-500/30">
+      <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <button id="menu-btn" onclick="toggleDrawer()" class="p-2 rounded-xl text-emerald-100 hover:bg-white/10 focus:outline-none transition">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-lg bg-amber-400/20 border border-amber-300/40 flex items-center justify-center text-amber-300">
+              <i class="fa-solid fa-crown text-xs"></i>
+            </span>
+            <span class="font-serif-elegant font-bold text-white text-base sm:text-lg tracking-wide">Silsilah Keluarga</span>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-2.5">
+          <!-- Badge Status Akses -->
+          <span id="access-status-badge" class="text-xs font-medium px-3 py-1 rounded-full bg-amber-400/20 text-amber-200 border border-amber-300/30 flex items-center gap-1.5">
+            <i class="fa-solid fa-pen-to-square text-[10px]"></i> Mode Edit
+          </span>
+          <!-- Tombol Integrasi Spreadsheet -->
+          <button onclick="openScriptModal()" title="Integrasi Spreadsheet" class="p-2 rounded-full text-emerald-100 hover:bg-white/10 transition">
+            <i class="fa-solid fa-table text-lg"></i>
+          </button>
+          <!-- Avatar Profil User Aktif -->
+          <button onclick="logoutUser()" title="Keluar (Logout)" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/15 pl-2.5 pr-3 py-1.5 rounded-full transition">
+            <div class="w-6 h-6 rounded-full bg-amber-400 text-emerald-950 flex items-center justify-center font-bold text-xs uppercase" id="header-user-initial">B</div>
+            <span class="text-xs font-medium text-emerald-50 hidden sm:inline" id="header-user-name">Bani_Rasbun</span>
+            <i class="fa-solid fa-right-from-bracket text-[11px] text-amber-300"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Drawer (Sidebar Overlay) -->
+    <div id="drawer-backdrop" onclick="toggleDrawer()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 hidden transition-opacity no-print"></div>
+    <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-50 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col no-print">
+      <div class="p-5 royal-header text-white flex items-center justify-between border-b border-amber-500/30">
+        <div>
+          <h2 class="font-serif-elegant font-bold text-white text-lg">Silsilah Bani</h2>
+          <p class="text-xs text-emerald-200">Sistem Arsip & Trah Keluarga</p>
+        </div>
+        <button onclick="toggleDrawer()" class="p-2 text-emerald-200 hover:text-white rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto">
+        <button onclick="navigate('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-emerald-50/70 transition">
+          <i class="fa-solid fa-chart-pie w-5 text-center text-emerald-600"></i>
+          Dashboard Statistik
+        </button>
+        <button onclick="navigate('keluarga')" id="nav-keluarga" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-emerald-50/70 transition">
+          <i class="fa-solid fa-sitemap w-5 text-center text-amber-600"></i>
+          Data Keluarga / Bagan
+        </button>
+        <button onclick="navigate('akses')" id="nav-akses" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-emerald-50/70 transition">
+          <i class="fa-solid fa-shield-halved w-5 text-center text-teal-600"></i>
+          Akses Pengubahan & Akun
+        </button>
+        
+        <div class="pt-3 pb-1 px-4 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Laporan & Cetak</div>
+        
+        <button onclick="navigate('pdf-pohon')" id="nav-pdf-pohon" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-emerald-50/70 transition">
+          <i class="fa-solid fa-diagram-project w-5 text-center text-emerald-700"></i>
+          Download Pohon Keluarga
+        </button>
+        <button onclick="navigate('pdf-tabel')" id="nav-pdf-tabel" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-emerald-50/70 transition">
+          <i class="fa-solid fa-table-list w-5 text-center text-amber-600"></i>
+          Download Tabel Keluarga
+        </button>
+
+        <div class="pt-3 pb-1 px-4 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Google Spreadsheet</div>
+
+        <button onclick="toggleDrawer(); openScriptModal();" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-emerald-50/70 transition">
+          <i class="fa-solid fa-code w-5 text-center text-green-600"></i>
+          Kode Script & ID Spreadsheet
+        </button>
+      </nav>
+
+      <div class="p-4 border-t border-slate-100 bg-emerald-50/50">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3 overflow-hidden">
+            <div class="w-9 h-9 rounded-full bg-emerald-800 text-amber-300 flex items-center justify-center font-bold text-sm uppercase shrink-0" id="drawer-user-initial">B</div>
+            <div class="overflow-hidden">
+              <p class="text-xs font-bold text-slate-800 truncate" id="drawer-user-name">User: Bani_Rasbun</p>
+              <p class="text-[11px] text-emerald-700 truncate">Akses Terverifikasi</p>
+            </div>
+          </div>
+          <button onclick="logoutUser()" class="text-xs text-rose-600 hover:bg-rose-50 px-2.5 py-1.5 rounded-lg font-semibold transition">
+            Keluar
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-6">
+
+      <!-- ==================== VIEW 1: DASHBOARD STATISTIK ==================== -->
+      <section id="view-dashboard" class="view-section space-y-4">
+        <!-- Banner Sambutan Elegan -->
+        <div class="royal-header rounded-2xl p-6 text-white shadow-lg border border-amber-400/30 relative overflow-hidden">
+          <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span class="inline-block text-[11px] uppercase tracking-widest text-amber-300 font-semibold mb-1">Arsip Trah & Keturunan</span>
+              <h2 class="font-serif-elegant text-2xl font-bold text-white">Selamat Datang, <span id="welcome-username" class="capitalize text-amber-300">Bani Rasbun</span></h2>
+              <p class="text-xs text-emerald-100 mt-1">Kelola silsilah keluarga besar lengkap dengan data kelahiran dan garis keturunan.</p>
+            </div>
+            <button onclick="navigate('keluarga')" class="bg-amber-400 hover:bg-amber-300 text-emerald-950 font-bold px-4 py-2.5 rounded-xl text-xs shadow-md transition shrink-0 self-start sm:self-center">
+              <i class="fa-solid fa-sitemap mr-1.5"></i> Buka Bagan Keluarga
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <!-- Card 1: Total Saudara -->
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-emerald-100/80 flex items-center justify-between">
+            <div>
+              <p class="text-xs font-semibold text-slate-500">Total Saudara</p>
+              <h3 id="stat-total-saudara" class="text-3xl font-bold text-slate-800 mt-1">0</h3>
+              <div class="flex items-center gap-1.5 mt-2">
+                <span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-[10px]">
+                  <i class="fa-solid fa-arrow-trend-up"></i>
+                </span>
+                <span class="text-xs text-slate-400">terdata aktif</span>
+              </div>
+            </div>
+            <svg class="w-20 h-12" viewBox="0 0 120 50" fill="none">
+              <path d="M5 42 C25 42, 35 42, 48 36 C56 32, 62 39, 72 37 C85 35, 92 18, 102 18 L115 18" stroke="#059669" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <!-- Card 2: Jumlah Kepala Keluarga -->
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-amber-100/80 flex items-center justify-between">
+            <div>
+              <p class="text-xs font-semibold text-slate-500">Jumlah Keluarga</p>
+              <h3 id="stat-total-kk" class="text-3xl font-bold text-slate-800 mt-1">0</h3>
+              <div class="flex items-center gap-1.5 mt-2">
+                <span class="w-5 h-5 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-[10px]">
+                  <i class="fa-solid fa-users"></i>
+                </span>
+                <span class="text-xs text-slate-400">anggota inti</span>
+              </div>
+            </div>
+            <svg class="w-20 h-12" viewBox="0 0 120 50" fill="none">
+              <path d="M5 42 C25 42, 35 42, 48 36 C56 32, 62 39, 72 37 C85 35, 92 18, 102 18 L115 18" stroke="#d97706" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <!-- Card 3: Jumlah Generasi -->
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-teal-100/80 flex items-center justify-between">
+            <div>
+              <p class="text-xs font-semibold text-slate-500">Jumlah Generasi</p>
+              <h3 id="stat-total-generasi" class="text-3xl font-bold text-slate-800 mt-1">0</h3>
+              <div class="flex items-center gap-1.5 mt-2">
+                <span class="w-5 h-5 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center text-[10px]">
+                  <i class="fa-solid fa-layer-group"></i>
+                </span>
+                <span class="text-xs text-slate-400">tingkat keturunan</span>
+              </div>
+            </div>
+            <svg class="w-20 h-12" viewBox="0 0 120 50" fill="none">
+              <path d="M5 42 C25 42, 35 42, 48 36 C56 32, 62 39, 72 37 C85 35, 92 18, 102 18 L115 18" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Card 4: Total Saudara Berdasarkan Generasi -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="text-sm font-bold text-slate-800">Total Saudara Berdasarkan Generasi</h4>
+            <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">Struktur Trah</span>
+          </div>
+          <div id="generation-breakdown-list" class="space-y-3.5">
+            <!-- Diisi otomatis via JS -->
+          </div>
+        </div>
+
+        <!-- Quick Action Bar -->
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <button onclick="navigate('pdf-pohon')" class="bg-white hover:bg-emerald-50/60 text-slate-800 border border-emerald-200/70 font-semibold py-3.5 px-4 rounded-xl text-sm shadow-sm transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-diagram-project text-emerald-700"></i> Cetak Pohon PDF
+          </button>
+          <button onclick="navigate('pdf-tabel')" class="bg-white hover:bg-amber-50/60 text-slate-800 border border-amber-200/70 font-semibold py-3.5 px-4 rounded-xl text-sm shadow-sm transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-table-list text-amber-600"></i> Cetak Tabel Keluarga
+          </button>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 2: DATA KELUARGA / BAGAN ==================== -->
+      <section id="view-keluarga" class="view-section hidden space-y-5">
+        <!-- Header & Breadcrumb -->
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 class="font-serif-elegant text-2xl font-bold text-slate-900">Data Keluarga / Bagan</h1>
+            <div class="flex items-center gap-2 text-xs text-slate-400 mt-1">
+              <button onclick="navigate('dashboard')" class="text-emerald-700 hover:underline font-medium">Dashboard</button>
+              <span>&bull;</span>
+              <span>Data Keluarga</span>
+            </div>
+          </div>
+          <button id="btn-tambah-orang-tua" onclick="goToParentNode()" class="bg-emerald-800 hover:bg-emerald-900 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm transition border border-amber-400/30">
+            Naik ke Orang Tua
+          </button>
+        </div>
+
+        <!-- Breadcrumb Trail Jalur Leluhur -->
+        <div id="ancestor-trail" class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+          <!-- Diisi otomatis via JS -->
+        </div>
+
+        <!-- Active Node Card (Orang Tua Saat Ini) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-emerald-200/70 overflow-hidden">
+          <div class="px-5 pt-3 bg-gradient-to-r from-emerald-50/80 to-amber-50/40 border-b border-emerald-100 flex items-center justify-between">
+            <span id="active-parent-tab" class="text-xs font-bold text-emerald-900 pb-2.5 border-b-2 border-amber-500">
+              Leluhur
+            </span>
+            <span class="text-[11px] font-medium text-amber-700 pb-2">Keluarga Aktif</span>
+          </div>
+          <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-start gap-3.5">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-800 to-teal-700 text-amber-300 flex items-center justify-center shrink-0 shadow-sm">
+                <i class="fa-solid fa-user-tie text-lg"></i>
+              </div>
+              <div class="space-y-1">
+                <h3 id="active-parent-name" class="font-bold text-slate-900 text-base sm:text-lg"></h3>
+                <p id="active-parent-spouse" class="text-xs font-medium text-emerald-700"></p>
+                <div id="active-parent-meta" class="flex flex-wrap gap-2 pt-1 text-[11px] text-slate-600"></div>
+              </div>
+            </div>
+            <button onclick="openMemberModal('edit', currentParentId)" class="edit-only-btn self-start sm:self-center text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3.5 py-2 rounded-xl transition shrink-0">
+              <i class="fa-solid fa-pen-to-square mr-1"></i> Ubah Data
+            </button>
+          </div>
+        </div>
+
+        <!-- Data Anak Header & Tambah Button -->
+        <div class="flex items-center justify-between pt-1">
+          <h2 class="text-base font-bold text-slate-800">Daftar Keturunan / Anak</h2>
+          <button onclick="openMemberModal('add', currentParentId)" class="edit-only-btn bg-gradient-to-r from-emerald-800 to-teal-700 hover:from-emerald-900 hover:to-teal-800 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2 border border-amber-400/30">
+            <i class="fa-solid fa-plus text-xs text-amber-300"></i> Tambah Anak
+          </button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative">
+          <input type="text" id="search-child-input" oninput="renderKeluargaView()" placeholder="Cari nama anak, pasangan, ayah/ibu, atau tempat lahir..." class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:border-emerald-500 shadow-sm">
+          <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-slate-400 text-sm"></i>
+        </div>
+
+        <!-- Children List -->
+        <div id="children-list-container" class="space-y-3">
+          <!-- Diisi otomatis via JS -->
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 3: AKSES PENGUBAHAN ==================== -->
+      <section id="view-akses" class="view-section hidden space-y-5">
+        <div>
+          <h1 class="font-serif-elegant text-2xl font-bold text-slate-900">Akses Pengubahan & Akun</h1>
+          <div class="flex items-center gap-2 text-xs text-slate-400 mt-1">
+            <button onclick="navigate('dashboard')" class="text-emerald-700 hover:underline font-medium">Dashboard</button>
+            <span>&bull;</span>
+            <span>Akses Pengubahan</span>
+          </div>
+        </div>
+
+        <p class="text-sm text-slate-500 leading-relaxed">
+          Kelola hak akses pengubahan data silsilah pada sesi perangkat ini serta informasi akun pengguna yang aktif.
+        </p>
+
+        <!-- Device & User Access Card -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-emerald-100 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="inline-block bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold px-3 py-1 rounded-lg">
+              Akun Terautentikasi
+            </span>
+            <span class="text-xs text-amber-600 font-semibold"><i class="fa-solid fa-shield-check mr-1"></i> Aktif</span>
+          </div>
+
+          <div>
+            <h3 id="admin-device-name" class="text-base font-bold text-slate-800">User: Bani_Rasbun</h3>
+            <p id="admin-device-phone" class="text-xs text-slate-500 mt-0.5">Hak Akses: Administrator Keluarga</p>
+            <p id="admin-device-date" class="text-xs text-slate-400 mt-1">Status Sesi: Terverifikasi</p>
+          </div>
+
+          <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+            <div>
+              <span class="text-sm font-bold text-slate-800 block">Izinkan Mengubah Data</span>
+              <span class="text-xs text-slate-400">Nonaktifkan jika hanya ingin melihat bagan</span>
+            </div>
+            <!-- Toggle Switch -->
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="toggle-edit-access" class="sr-only peer" checked>
+              <div class="w-12 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-700"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <button onclick="resetAccessSettings()" class="px-5 py-2.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-sm font-semibold transition">
+            Reset
+          </button>
+          <button onclick="saveAccessSettings()" class="px-6 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold shadow-sm transition">
+            Simpan Pengaturan
+          </button>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 4: DOWNLOAD HASIL POHON KELUARGA ==================== -->
+      <section id="view-pdf-pohon" class="view-section hidden space-y-4">
+        <div class="no-print space-y-3">
+          <h1 class="font-serif-elegant text-2xl font-bold text-slate-900">Download Hasil Pohon Keluarga</h1>
+          <p class="text-sm text-slate-500 leading-relaxed">
+            Cetak atau simpan bagan pohon silsilah keluarga dalam format dokumen PDF.
+          </p>
+          <button onclick="printDocument('tree')" class="bg-emerald-800 hover:bg-emerald-900 text-white text-sm font-semibold px-5 py-3 rounded-xl shadow-sm transition inline-flex items-center gap-2.5 border border-amber-400/30">
+            <i class="fa-solid fa-download text-amber-300"></i> Cetak PDF
+          </button>
+        </div>
+
+        <!-- PDF Viewer Mockup Frame -->
+        <div class="bg-slate-800 rounded-2xl overflow-hidden shadow-lg border border-slate-700">
+          <!-- PDF Toolbar Header -->
+          <div class="bg-slate-900 text-slate-300 px-4 py-2.5 flex items-center justify-between text-xs no-print">
+            <div class="flex items-center gap-3 truncate">
+              <i class="fa-solid fa-file-pdf text-amber-400"></i>
+              <span class="truncate font-mono text-[11px]">pohon-silsilah-keluarga.pdf</span>
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+              <span class="bg-slate-800 px-2 py-0.5 rounded text-[11px]">1 / 1</span>
+              <button onclick="printDocument('tree')" title="Print" class="hover:text-white"><i class="fa-solid fa-print"></i></button>
+            </div>
+          </div>
+
+          <!-- Paper Sheet Area -->
+          <div class="p-3 sm:p-6 overflow-x-auto">
+            <div id="pdf-tree-paper" class="bg-white text-slate-900 min-w-[540px] max-w-2xl mx-auto p-6 sm:p-10 shadow-lg rounded-sm">
+              <div class="text-center mb-6 border-b border-slate-200 pb-4">
+                <h2 class="font-serif-elegant font-bold text-base sm:text-lg text-slate-900">Pohon Silsilah Keluarga Besar</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Arsip Trah & Keturunan</p>
+              </div>
+              <div id="ascii-tree-container" class="tree-line text-xs sm:text-[13px] text-slate-800 whitespace-pre overflow-x-auto">
+                <!-- Diisi otomatis oleh JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 5: DOWNLOAD HASIL TABEL KELUARGA ==================== -->
+      <section id="view-pdf-tabel" class="view-section hidden space-y-4">
+        <div class="no-print space-y-3">
+          <h1 class="font-serif-elegant text-2xl font-bold text-slate-900">Download Hasil Tabel Keluarga</h1>
+          <p class="text-sm text-slate-500 leading-relaxed">
+            Cetak data lengkap anggota keluarga (termasuk Tempat Tanggal Lahir, Nama Ayah, dan Nama Ibu) ke PDF atau CSV Spreadsheet.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="printDocument('table')" class="bg-emerald-800 hover:bg-emerald-900 text-white text-sm font-semibold px-5 py-3 rounded-xl shadow-sm transition inline-flex items-center gap-2.5 border border-amber-400/30">
+              <i class="fa-solid fa-download text-amber-300"></i> Cetak PDF
+            </button>
+            <button onclick="exportToCSV()" class="bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold px-4 py-3 rounded-xl shadow-sm transition inline-flex items-center gap-2">
+              <i class="fa-solid fa-file-excel"></i> Export CSV Spreadsheet
+            </button>
+          </div>
+        </div>
+
+        <!-- PDF Viewer Mockup Frame -->
+        <div class="bg-slate-800 rounded-2xl overflow-hidden shadow-lg border border-slate-700">
+          <!-- PDF Toolbar Header -->
+          <div class="bg-slate-900 text-slate-300 px-4 py-2.5 flex items-center justify-between text-xs no-print">
+            <div class="flex items-center gap-3 truncate">
+              <i class="fa-solid fa-table text-amber-400"></i>
+              <span class="truncate font-mono text-[11px]">tabel-lengkap-keluarga.pdf</span>
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+              <span class="bg-slate-800 px-2 py-0.5 rounded text-[11px]">1 / 1</span>
+              <button onclick="printDocument('table')" title="Print" class="hover:text-white"><i class="fa-solid fa-print"></i></button>
+            </div>
+          </div>
+
+          <!-- Paper Sheet Area -->
+          <div class="p-3 sm:p-6 overflow-x-auto">
+            <div id="pdf-table-paper" class="bg-white text-slate-900 min-w-[780px] max-w-4xl mx-auto p-6 sm:p-8 shadow-lg rounded-sm">
+              <div class="text-center mb-5 border-b border-slate-200 pb-3">
+                <h2 class="font-serif-elegant font-bold text-base sm:text-lg text-slate-900">Daftar Lengkap Anggota Keluarga</h2>
+                <p class="text-xs text-slate-500">Data Biodata, Orang Tua, & Domisili</p>
+              </div>
+              <table class="w-full border-collapse border border-slate-800 text-[10px] sm:text-[11px]">
+                <thead>
+                  <tr class="bg-emerald-900 text-white font-bold">
+                    <th class="border border-slate-800 px-2 py-2 text-center w-8">No</th>
+                    <th class="border border-slate-800 px-2 py-2 text-left">Nama Lengkap</th>
+                    <th class="border border-slate-800 px-2 py-2 text-left">Tempat, Tgl Lahir</th>
+                    <th class="border border-slate-800 px-2 py-2 text-center w-8">JK</th>
+                    <th class="border border-slate-800 px-2 py-2 text-left">Nama Ayah</th>
+                    <th class="border border-slate-800 px-2 py-2 text-left">Nama Ibu</th>
+                    <th class="border border-slate-800 px-2 py-2 text-left">Pasangan</th>
+                    <th class="border border-slate-800 px-2 py-2 text-left">Alamat & Telp</th>
+                  </tr>
+                </thead>
+                <tbody id="pdf-table-body">
+                  <!-- Diisi otomatis via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Area Khusus Print -->
+      <div id="printable-area" class="hidden"></div>
+
+    </main>
+  </div>
+
+  <!-- ==================== MODAL TAMBAH / UBAH DATA ANGGOTA ==================== -->
+  <div id="member-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col shadow-2xl border border-amber-500/20 overflow-hidden">
+      <div class="px-6 py-4 royal-header text-white flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-user-pen text-amber-300"></i>
+          <h3 id="member-modal-title" class="font-serif-elegant font-bold text-lg">Tambah Data Anak</h3>
+        </div>
+        <button onclick="closeMemberModal()" class="text-emerald-200 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="member-form" onsubmit="handleSaveMember(event)" class="p-6 overflow-y-auto space-y-3.5">
+        <input type="hidden" id="form-mode">
+        <input type="hidden" id="form-target-id">
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap *</label>
+          <input type="text" id="form-nama" required placeholder="Contoh: Hasan" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+        </div>
+
+        <!-- Tempat Tanggal Lahir -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Tempat, Tanggal Lahir</label>
+          <input type="text" id="form-ttl" placeholder="Contoh: Surabaya, 15 Agustus 1985" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+        </div>
+
+        <!-- Nama Ayah & Nama Ibu -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Ayah</label>
+            <input type="text" id="form-ayah" placeholder="Nama lengkap ayah" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Ibu</label>
+            <input type="text" id="form-ibu" placeholder="Nama lengkap ibu" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Pasangan (Suami/Istri)</label>
+          <input type="text" id="form-pasangan" placeholder="Contoh: Siti Aminah" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Jenis Kelamin</label>
+            <select id="form-jk" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-emerald-600 bg-white">
+              <option value="L">Laki-laki (L)</option>
+              <option value="P">Perempuan (P)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">No. Telepon / WA</label>
+            <input type="text" id="form-telp" placeholder="08123456789" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Alamat Domisili</label>
+          <input type="text" id="form-alamat" placeholder="Contoh: Jl. Merdeka No. 10, Jakarta" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeMemberModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Batal</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-emerald-800 hover:bg-emerald-900 text-white shadow-sm transition">Simpan Data</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL KONFIRMASI HAPUS ==================== -->
+  <div id="delete-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4">
+      <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl">
+        <i class="fa-solid fa-trash-can"></i>
+      </div>
+      <div>
+        <h3 class="font-bold text-slate-800 text-base">Hapus Data Keluarga?</h3>
+        <p id="delete-modal-desc" class="text-xs text-slate-500 mt-1">Data beserta seluruh keturunan di bawahnya akan dihapus.</p>
+      </div>
+      <div class="flex items-center justify-center gap-3 pt-2">
+        <button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50">Batal</button>
+        <button id="confirm-delete-btn" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold shadow-sm">Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL GOOGLE APPS SCRIPT & ID SPREADSHEET ==================== -->
+  <div id="script-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="px-6 py-4 royal-header text-white flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center">
+            <i class="fa-solid fa-file-excel"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-base">Integrasi Google Spreadsheet (Code.gs)</h3>
+            <p class="text-[11px] text-emerald-200">Masukkan ID Spreadsheet dan salin kode GS</p>
+          </div>
+        </div>
+        <button onclick="closeScriptModal()" class="text-emerald-200 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-4 text-xs text-slate-600">
+        <!-- Kolom Paste ID Spreadsheet -->
+        <div class="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-200 space-y-3">
+          <div>
+            <label class="block font-bold text-emerald-950 mb-1">
+              <i class="fa-solid fa-key text-amber-600 mr-1"></i> Paste ID Google Spreadsheet Anda di Sini:
+            </label>
+            <input type="text" id="spreadsheet-id-input" oninput="updateGasCodeWithId()" placeholder="Contoh: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms" class="w-full bg-white border border-emerald-300 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-800 focus:outline-none focus:border-emerald-700 shadow-xs">
+            <p class="text-[11px] text-slate-500 mt-1">
+              ID Spreadsheet dapat disalin dari URL Google Sheet: <code class="bg-white px-1 py-0.5 rounded border border-slate-200">docs.google.com/spreadsheets/d/<strong>[ID_SPREADSHEET]</strong>/edit</code>. Kode <code class="font-bold text-emerald-800">Code.gs</code> di bawah otomatis terisi dengan ID ini.
+            </p>
+          </div>
+
+          <div class="pt-2 border-t border-emerald-200/70">
+            <label class="block font-bold text-emerald-950 mb-1">URL Web App Google Apps Script (Opsional untuk Live Sync)</label>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input type="url" id="gas-webapp-url" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-emerald-600">
+              <button onclick="syncWithSpreadsheet()" class="bg-emerald-800 hover:bg-emerald-900 text-white font-semibold px-4 py-2 rounded-xl transition shrink-0">
+                <i class="fa-solid fa-rotate mr-1 text-amber-300"></i> Sinkronkan
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Code.gs Box -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-800">Kode Google Apps Script (<code class="text-emerald-700">Code.gs</code>)</span>
+            <button onclick="copyGasCode()" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-900 px-3 py-1 rounded-lg font-semibold flex items-center gap-1.5 transition">
+              <i class="fa-regular fa-copy"></i> Salin Kode GS
+            </button>
+          </div>
+          <pre id="gas-code-block" class="bg-slate-900 text-emerald-300 p-4 rounded-xl overflow-x-auto font-mono text-[11px] leading-relaxed select-all"></pre>
+        </div>
+      </div>
+
+      <div class="px-6 py-3.5 border-t border-slate-100 bg-slate-50 flex justify-end">
+        <button onclick="closeScriptModal()" class="px-5 py-2 rounded-xl bg-emerald-800 text-white text-xs font-semibold hover:bg-emerald-900">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-emerald-950 text-white border border-amber-400/40 text-xs font-medium px-4 py-2.5 rounded-full shadow-xl opacity-0 pointer-events-none transition-opacity duration-300 z-50 flex items-center gap-2 no-print">
+    <i class="fa-solid fa-circle-check text-amber-400"></i>
+    <span id="toast-message">Berhasil disimpan!</span>
+  </div>
+
+  <script>
+    // ==================== KONFIGURASI AKUN PENGGUNA ====================
+    const validUsers = [
+      { username: 'Bani_Rasbun', password: 'rasbun123', role: 'Administrator Keluarga' }
+    ];
+    let currentUser = null;
+
+    // ==================== DATA AWAL SILSILAH KELUARGA ====================
+    const initialFamilyData = [
+      { id: '1', parentId: null, nama: 'Leluhur Utama (Bani)', ttl: '', ayah: '-', ibu: '-', pasangan: 'Nyai Leluhur', jk: '', alamat: '', telp: '' },
+    ];
+
+    // Istilah Generasi Jawa / Nusantara dengan palet warna elegan
+    const generationLabels = [
+      { name: 'Anak', color: '#059669' },
+      { name: 'Putu', color: '#d97706' },
+      { name: 'Buyut', color: '#0d9488' },
+      { name: 'Canggah', color: '#b45309' },
+      { name: 'Wareng', color: '#047857' },
+      { name: 'Udhek-udhek', color: '#0284c7' },
+      { name: 'Gantung siwur', color: '#7c3aed' },
+      { name: 'Gropak senthe', color: '#be185d' }
+    ];
+
+    // State Aplikasi
+    let familyData = JSON.parse(JSON.stringify(initialFamilyData));
+    let currentView = 'dashboard';
+    let currentParentId = '1';
+    let canEdit = true;
+    let gasWebAppUrl = '';
+
+    // ==================== TEMPLATE KODE GS DINAMIS ====================
+    function generateGasCode(spreadsheetId) {
+      const idValue = spreadsheetId ? spreadsheetId : 'PASTE_ID_SPREADSHEET_ANDA_DI_SINI';
+      return `// =========================================================================
+// KODE GOOGLE APPS SCRIPT (Code.gs) - SILSILAH KELUARGA BANI RASBUN
+// =========================================================================
+
+// Tempel (Paste) ID Google Spreadsheet Anda di variabel bawah ini:
+const SPREADSHEET_ID = '${idValue}';
+const SHEET_NAME = 'DataKeluarga';
+
+function getTargetSheet_() {
+  const ss = SPREADSHEET_ID && SPREADSHEET_ID !== 'PASTE_ID_SPREADSHEET_ANDA_DI_SINI'
+    ? SpreadsheetApp.openById(SPREADSHEET_ID)
+    : SpreadsheetApp.getActiveSpreadsheet();
+    
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+    sheet.appendRow(['id', 'parentId', 'nama', 'ttl', 'ayah', 'ibu', 'pasangan', 'jk', 'alamat', 'telp']);
+    sheet.getRange(1, 1, 1, 10).setFontWeight('bold').setBackground('#064e3b').setFontColor('#ffffff');
+  }
+  return sheet;
+}
+
+// Mengambil data dari Spreadsheet (GET)
+function doGet(e) {
+  try {
+    const sheet = getTargetSheet_();
+    const data = sheet.getDataRange().getValues();
+    
+    if (data.length <= 1) {
+      return ContentService.createTextOutput(JSON.stringify({ status: 'success', data: [] }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const headers = data[0];
+    const rows = data.slice(1).map(row => {
+      const obj = {};
+      headers.forEach((h, i) => {
+        obj[h] = row[i] !== undefined && row[i] !== null ? String(row[i]) : '';
+      });
+      return obj;
+    });
+    
+    return ContentService.createTextOutput(JSON.stringify({ status: 'success', data: rows }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Menyimpan / Sinkronisasi data ke Spreadsheet (POST)
+function doPost(e) {
+  try {
+    const sheet = getTargetSheet_();
+    const payload = JSON.parse(e.postData.contents);
+    
+    if (payload.action === 'syncAll' && Array.isArray(payload.records)) {
+      sheet.clear();
+      sheet.appendRow(['id', 'parentId', 'nama', 'ttl', 'ayah', 'ibu', 'pasangan', 'jk', 'alamat', 'telp']);
+      sheet.getRange(1, 1, 1, 10).setFontWeight('bold').setBackground('#064e3b').setFontColor('#ffffff');
+      
+      if (payload.records.length > 0) {
+        const rows = payload.records.map(item => [
+          item.id || '',
+          item.parentId || '',
+          item.nama || '',
+          item.ttl || '',
+          item.ayah || '',
+          item.ibu || '',
+          item.pasangan || '',
+          item.jk || '',
+          item.alamat || '',
+          item.telp || ''
+        ]);
+        sheet.getRange(2, 1, rows.length, 10).setValues(rows);
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ status: 'saved', total: payload.records ? payload.records.length : 0 }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}`;
+    }
+
+    function updateGasCodeWithId() {
+      const idVal = document.getElementById('spreadsheet-id-input').value.trim();
+      document.getElementById('gas-code-block').textContent = generateGasCode(idVal);
+    }
+
+    // ==================== AUTENTIKASI LOGIN & LOGOUT ====================
+    function handleLogin(e) {
+      e.preventDefault();
+      const usernameInput = document.getElementById('login-username').value.trim().toLowerCase();
+      const passwordInput = document.getElementById('login-password').value;
+      const errorBox = document.getElementById('login-error');
+
+      const matchedUser = validUsers.find(u => u.username.toLowerCase() === usernameInput && u.password === passwordInput);
+
+      if (matchedUser) {
+        currentUser = matchedUser;
+        errorBox.classList.add('hidden');
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('app-wrapper').classList.remove('hidden');
+
+        // Set info user di UI
+        document.getElementById('header-user-name').textContent = matchedUser.username;
+        document.getElementById('header-user-initial').textContent = matchedUser.username.charAt(0);
+        document.getElementById('drawer-user-name').textContent = `User: ${matchedUser.username}`;
+        document.getElementById('drawer-user-initial').textContent = matchedUser.username.charAt(0);
+        document.getElementById('welcome-username').textContent = matchedUser.username;
+        document.getElementById('admin-device-name').textContent = `User: ${matchedUser.username}`;
+
+        navigate('dashboard');
+        updateAccessUI();
+        showToast(`Selamat datang Bani Rasbun, ${matchedUser.username}!`);
+      } else {
+        errorBox.classList.remove('hidden');
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const pwdInput = document.getElementById('login-password');
+      const eyeIcon = document.getElementById('eye-icon');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      } else {
+        pwdInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      }
+    }
+
+    function logoutUser() {
+      currentUser = null;
+      document.getElementById('login-form').reset();
+      document.getElementById('app-wrapper').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
+      const drawer = document.getElementById('drawer');
+      if (!drawer.classList.contains('-translate-x-full')) {
+        toggleDrawer();
+      }
+      showToast('Anda telah keluar dari sesi');
+    }
+
+    // ==================== NAVIGASI & DRAWER ====================
+    function toggleDrawer() {
+      const drawer = document.getElementById('drawer');
+      const backdrop = document.getElementById('drawer-backdrop');
+      const isClosed = drawer.classList.contains('-translate-x-full');
+      
+      if (isClosed) {
+        drawer.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      } else {
+        drawer.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    function navigate(viewName) {
+      currentView = viewName;
+      
+      document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById(`view-${viewName}`);
+      if (target) target.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.remove('bg-emerald-50', 'text-emerald-800', 'font-semibold');
+      });
+      const activeNav = document.getElementById(`nav-${viewName}`);
+      if (activeNav) {
+        activeNav.classList.add('bg-emerald-50', 'text-emerald-800', 'font-semibold');
+      }
+
+      const drawer = document.getElementById('drawer');
+      if (!drawer.classList.contains('-translate-x-full')) {
+        toggleDrawer();
+      }
+
+      if (viewName === 'dashboard') renderDashboard();
+      if (viewName === 'keluarga') renderKeluargaView();
+      if (viewName === 'pdf-pohon') renderPdfTree();
+      if (viewName === 'pdf-tabel') renderPdfTable();
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==================== PERHITUNGAN GENERASI & STATISTIK ====================
+    function getMemberDepth(memberId) {
+      let depth = 0;
+      let curr = familyData.find(m => m.id === memberId);
+      const visited = new Set();
+      while (curr && curr.parentId && !visited.has(curr.id)) {
+        visited.add(curr.id);
+        depth++;
+        curr = familyData.find(m => m.id === curr.parentId);
+      }
+      return depth;
+    }
+
+    function renderDashboard() {
+      let totalIndividu = familyData.length;
+      let totalPasangan = familyData.filter(m => m.pasangan && m.pasangan.trim() !== '').length;
+      let totalSaudara = totalIndividu + totalPasangan;
+
+      let maxDepth = 0;
+      const genCounts = {};
+
+      familyData.forEach(m => {
+        const depth = getMemberDepth(m.id);
+        if (depth > maxDepth) maxDepth = depth;
+        if (depth >= 1) {
+          const countInNode = 1 + (m.pasangan && m.pasangan.trim() !== '' ? 1 : 0);
+          genCounts[depth] = (genCounts[depth] || 0) + countInNode;
+        }
+      });
+
+      document.getElementById('stat-total-saudara').textContent = totalSaudara;
+      document.getElementById('stat-total-kk').textContent = totalIndividu;
+      document.getElementById('stat-total-generasi').textContent = maxDepth;
+
+      const listContainer = document.getElementById('generation-breakdown-list');
+      listContainer.innerHTML = '';
+
+      generationLabels.forEach((gen, index) => {
+        const depthLevel = index + 1;
+        const count = genCounts[depthLevel] || 0;
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between text-sm py-1 border-b border-slate-50 last:border-none';
+        row.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full shrink-0 shadow-xs" style="background-color: ${gen.color}"></span>
+            <span class="text-slate-700 font-medium">${gen.name}</span>
+          </div>
+          <span class="font-bold text-slate-800 bg-slate-50 px-2.5 py-0.5 rounded-lg text-xs">${count} Saudara</span>
+        `;
+        listContainer.appendChild(row);
+      });
+    }
+
+    // ==================== MANAJEMEN DATA KELUARGA / BAGAN ====================
+    function renderKeluargaView() {
+      const parent = familyData.find(m => m.id === currentParentId) || familyData[0];
+      if (!parent) return;
+      currentParentId = parent.id;
+
+      // Update Tombol Naik ke Orang Tua
+      const btnUp = document.getElementById('btn-tambah-orang-tua');
+      if (parent.parentId) {
+        btnUp.classList.remove('opacity-60');
+        btnUp.textContent = 'Naik ke Orang Tua';
+      } else {
+        btnUp.textContent = 'Puncak Leluhur';
+      }
+
+      // Render Ancestor Trail (Breadcrumb jalur silsilah)
+      const trailContainer = document.getElementById('ancestor-trail');
+      const trail = [];
+      let temp = parent;
+      while (temp) {
+        trail.unshift(temp);
+        temp = familyData.find(m => m.id === temp.parentId);
+      }
+      trailContainer.innerHTML = trail.map((node, idx) => `
+        <button onclick="selectParentNode('${node.id}')" class="px-3 py-1.5 rounded-xl whitespace-nowrap transition ${idx === trail.length - 1 ? 'bg-emerald-800 text-amber-200 font-semibold shadow-xs' : 'bg-white text-slate-600 hover:bg-emerald-50 border border-slate-200'}">
+          ${node.nama || 'Leluhur'}
+        </button>
+        ${idx < trail.length - 1 ? '<i class="fa-solid fa-chevron-right text-[10px] text-amber-600"></i>' : ''}
+      `).join('');
+
+      // Render Active Parent Card
+      document.getElementById('active-parent-tab').textContent = parent.nama || 'Leluhur Utama';
+      document.getElementById('active-parent-name').textContent = parent.nama || 'Leluhur Utama';
+      document.getElementById('active-parent-spouse').textContent = parent.pasangan ? `Pasangan: ${parent.pasangan}` : 'Belum ada data pasangan';
+      
+      const metaContainer = document.getElementById('active-parent-meta');
+      metaContainer.innerHTML = `
+        ${parent.ttl ? `<span class="bg-amber-50 text-amber-800 border border-amber-200/70 px-2.5 py-0.5 rounded-lg"><i class="fa-solid fa-cake-candles mr-1 text-amber-600"></i>${parent.ttl}</span>` : ''}
+        ${(parent.ayah || parent.ibu) ? `<span class="bg-emerald-50 text-emerald-800 border border-emerald-200/70 px-2.5 py-0.5 rounded-lg"><i class="fa-solid fa-people-roof mr-1 text-emerald-600"></i>Ayah: ${parent.ayah || '-'} | Ibu: ${parent.ibu || '-'}</span>` : ''}
+        ${parent.alamat ? `<span class="bg-slate-100 px-2.5 py-0.5 rounded-lg"><i class="fa-solid fa-location-dot mr-1 text-slate-500"></i>${parent.alamat}</span>` : ''}
+        ${parent.telp ? `<span class="bg-slate-100 px-2.5 py-0.5 rounded-lg"><i class="fa-solid fa-phone mr-1 text-slate-500"></i>${parent.telp}</span>` : ''}
+      `;
+
+      // Filter anak berdasarkan parentId & pencarian
+      const searchQuery = document.getElementById('search-child-input').value.toLowerCase().trim();
+      const children = familyData.filter(m => {
+        const isChild = m.parentId === currentParentId;
+        const matchSearch = 
+          (m.nama && m.nama.toLowerCase().includes(searchQuery)) ||
+          (m.pasangan && m.pasangan.toLowerCase().includes(searchQuery)) ||
+          (m.ttl && m.ttl.toLowerCase().includes(searchQuery)) ||
+          (m.ayah && m.ayah.toLowerCase().includes(searchQuery)) ||
+          (m.ibu && m.ibu.toLowerCase().includes(searchQuery));
+        return isChild && matchSearch;
+      });
+
+      const childrenContainer = document.getElementById('children-list-container');
+      if (children.length === 0) {
+        childrenContainer.innerHTML = `
+          <div class="bg-white rounded-2xl p-8 text-center border border-dashed border-emerald-200">
+            <p class="text-sm text-slate-400">Belum ada data anak yang ditemukan untuk keluarga ini.</p>
+          </div>
+        `;
+      } else {
+        childrenContainer.innerHTML = children.map(child => {
+          const grandChildrenCount = familyData.filter(m => m.parentId === child.id).length;
+          return `
+            <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-100 hover:border-emerald-300 transition">
+              <div class="flex items-start justify-between gap-3">
+                <div onclick="selectParentNode('${child.id}')" class="flex-1 cursor-pointer group">
+                  <div class="flex flex-wrap items-center gap-2 mb-2.5">
+                    <span class="bg-emerald-50 text-emerald-800 border border-emerald-200/60 text-[11px] font-semibold px-2.5 py-0.5 rounded-md">
+                      ${child.jk === 'P' ? 'Anak Perempuan' : 'Anak Laki-laki'}
+                    </span>
+                    ${grandChildrenCount > 0 ? `<span class="bg-amber-50 text-amber-700 border border-amber-200/60 text-[11px] font-semibold px-2.5 py-0.5 rounded-md">${grandChildrenCount} Keturunan</span>` : ''}
+                  </div>
+                  
+                  <div class="flex items-start gap-3.5">
+                    <div class="w-11 h-11 rounded-2xl ${child.jk === 'P' ? 'bg-amber-600' : 'bg-emerald-800'} text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition">
+                      <i class="fa-solid ${child.jk === 'P' ? 'fa-user-nurse' : 'fa-user'} text-base"></i>
+                    </div>
+                    <div class="space-y-1">
+                      <h4 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-emerald-700 transition">${child.nama}</h4>
+                      <p class="text-xs text-slate-500">Pasangan: <span class="font-medium text-slate-700">${child.pasangan || '-'}</span></p>
+                      
+                      <!-- Info Tambahan: TTL, Ayah, Ibu -->
+                      <div class="flex flex-wrap gap-1.5 pt-1 text-[11px] text-slate-600">
+                        ${child.ttl ? `<span class="bg-slate-50 border border-slate-200/70 px-2 py-0.5 rounded"><i class="fa-solid fa-cake-candles text-amber-600 mr-1"></i>${child.ttl}</span>` : ''}
+                        ${child.ayah ? `<span class="bg-slate-50 border border-slate-200/70 px-2 py-0.5 rounded"><i class="fa-solid fa-mars text-emerald-700 mr-1"></i>Ayah: ${child.ayah}</span>` : ''}
+                        ${child.ibu ? `<span class="bg-slate-50 border border-slate-200/70 px-2 py-0.5 rounded"><i class="fa-solid fa-venus text-amber-600 mr-1"></i>Ibu: ${child.ibu}</span>` : ''}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Aksi Hapus & Edit -->
+                <div class="flex items-center gap-1.5 pt-1 shrink-0">
+                  <button onclick="openMemberModal('edit', '${child.id}')" title="Ubah Data" class="edit-only-btn p-2 text-emerald-700 hover:bg-emerald-50 rounded-xl transition">
+                    <i class="fa-solid fa-pen-to-square text-sm"></i>
+                  </button>
+                  <button onclick="askDeleteMember('${child.id}', '${child.nama.replace(/'/g, "\\'")}')" title="Hapus Data" class="edit-only-btn p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition">
+                    <i class="fa-solid fa-trash-can text-sm"></i>
+                  </button>
+                  <button onclick="selectParentNode('${child.id}')" title="Lihat Keturunan" class="p-2 text-slate-400 hover:text-emerald-800 hover:bg-slate-100 rounded-xl transition">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      updateAccessUI();
+    }
+
+    function selectParentNode(id) {
+      currentParentId = id;
+      document.getElementById('search-child-input').value = '';
+      renderKeluargaView();
+    }
+
+    function goToParentNode() {
+      const curr = familyData.find(m => m.id === currentParentId);
+      if (curr && curr.parentId) {
+        selectParentNode(curr.parentId);
+      } else {
+        showToast('Sudah berada di puncak leluhur utama');
+      }
+    }
+
+    // ==================== MODAL TAMBAH / EDIT ====================
+    function openMemberModal(mode, targetId) {
+      if (!canEdit) {
+        showToast('Akses pengubahan sedang dikunci (Mode Lihat)');
+        return;
+      }
+      const modal = document.getElementById('member-modal');
+      const title = document.getElementById('member-modal-title');
+      document.getElementById('form-mode').value = mode;
+      document.getElementById('form-target-id').value = targetId;
+
+      if (mode === 'add') {
+        title.textContent = 'Tambah Data Anak';
+        document.getElementById('member-form').reset();
+
+        const activeParent = familyData.find(m => m.id === targetId);
+        if (activeParent) {
+          if (activeParent.jk === 'P') {
+            document.getElementById('form-ibu').value = activeParent.nama || '';
+            document.getElementById('form-ayah').value = activeParent.pasangan || '';
+          } else {
+            document.getElementById('form-ayah').value = activeParent.nama || '';
+            document.getElementById('form-ibu').value = activeParent.pasangan || '';
+          }
+        }
+      } else {
+        title.textContent = 'Ubah Data Anggota';
+        const member = familyData.find(m => m.id === targetId);
+        if (member) {
+          document.getElementById('form-nama').value = member.nama || '';
+          document.getElementById('form-ttl').value = member.ttl || '';
+          document.getElementById('form-ayah').value = member.ayah || '';
+          document.getElementById('form-ibu').value = member.ibu || '';
+          document.getElementById('form-pasangan').value = member.pasangan || '';
+          document.getElementById('form-jk').value = member.jk || 'L';
+          document.getElementById('form-telp').value = member.telp || '';
+          document.getElementById('form-alamat').value = member.alamat || '';
+        }
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeMemberModal() {
+      document.getElementById('member-modal').classList.add('hidden');
+    }
+
+    function handleSaveMember(e) {
+      e.preventDefault();
+      const mode = document.getElementById('form-mode').value;
+      const targetId = document.getElementById('form-target-id').value;
+      const nama = document.getElementById('form-nama').value.trim();
+      const ttl = document.getElementById('form-ttl').value.trim();
+      const ayah = document.getElementById('form-ayah').value.trim();
+      const ibu = document.getElementById('form-ibu').value.trim();
+      const pasangan = document.getElementById('form-pasangan').value.trim();
+      const jk = document.getElementById('form-jk').value;
+      const telp = document.getElementById('form-telp').value.trim();
+      const alamat = document.getElementById('form-alamat').value.trim();
+
+      if (mode === 'add') {
+        const newId = Date.now().toString();
+        familyData.push({
+          id: newId,
+          parentId: targetId,
+          nama,
+          ttl,
+          ayah,
+          ibu,
+          pasangan,
+          jk,
+          telp,
+          alamat
+        });
+        showToast('Data anggota berhasil ditambahkan');
+      } else {
+        const idx = familyData.findIndex(m => m.id === targetId);
+        if (idx !== -1) {
+          familyData[idx] = { ...familyData[idx], nama, ttl, ayah, ibu, pasangan, jk, telp, alamat };
+          showToast('Perubahan data berhasil disimpan');
+        }
+      }
+
+      closeMemberModal();
+      renderKeluargaView();
+      if (gasWebAppUrl) syncWithSpreadsheet(true);
+    }
+
+    // ==================== HAPUS DATA (REKURSIF) ====================
+    let pendingDeleteId = null;
+
+    function askDeleteMember(id, nama) {
+      if (!canEdit) {
+        showToast('Akses pengubahan sedang dikunci');
+        return;
+      }
+      pendingDeleteId = id;
+      document.getElementById('delete-modal-desc').textContent = `Yakin ingin menghapus "${nama}" beserta seluruh keturunan di bawahnya?`;
+      document.getElementById('delete-modal').classList.remove('hidden');
+      
+      document.getElementById('confirm-delete-btn').onclick = function() {
+        deleteMemberRecursive(pendingDeleteId);
+        closeDeleteModal();
+        renderKeluargaView();
+        showToast('Data keluarga berhasil dihapus');
+      };
+    }
+
+    function deleteMemberRecursive(id) {
+      const children = familyData.filter(m => m.parentId === id);
+      children.forEach(c => deleteMemberRecursive(c.id));
+      familyData = familyData.filter(m => m.id !== id);
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('delete-modal').classList.add('hidden');
+      pendingDeleteId = null;
+    }
+
+    // ==================== AKSES PENGUBAHAN ====================
+    function saveAccessSettings() {
+      canEdit = document.getElementById('toggle-edit-access').checked;
+      updateAccessUI();
+      showToast(canEdit ? 'Akses pengubahan diaktifkan' : 'Mode hanya lihat diaktifkan');
+    }
+
+    function resetAccessSettings() {
+      document.getElementById('toggle-edit-access').checked = true;
+      canEdit = true;
+      updateAccessUI();
+      showToast('Pengaturan akses di-reset ke default');
+    }
+
+    function updateAccessUI() {
+      const badge = document.getElementById('access-status-badge');
+      const editBtns = document.querySelectorAll('.edit-only-btn');
+
+      if (canEdit) {
+        badge.className = 'text-xs font-medium px-3 py-1 rounded-full bg-amber-400/20 text-amber-200 border border-amber-300/30 flex items-center gap-1.5';
+        badge.innerHTML = '<i class="fa-solid fa-pen-to-square text-[10px]"></i> Mode Edit';
+        editBtns.forEach(btn => btn.classList.remove('hidden'));
+      } else {
+        badge.className = 'text-xs font-medium px-3 py-1 rounded-full bg-white/15 text-emerald-100 border border-white/20 flex items-center gap-1.5';
+        badge.innerHTML = '<i class="fa-solid fa-eye text-[10px]"></i> Hanya Lihat';
+        editBtns.forEach(btn => btn.classList.add('hidden'));
+      }
+    }
+
+    // ==================== RENDER PDF POHON & TABEL ====================
+    function buildAsciiTree(parentId, prefix = '') {
+      const children = familyData.filter(m => m.parentId === parentId);
+      let result = '';
+
+      children.forEach((child, index) => {
+        const isLast = index === children.length - 1;
+        const connector = isLast ? '└── ' : '├── ';
+        const spouseText = child.pasangan ? ` & ${child.pasangan}` : '';
+        const ttlText = child.ttl ? ` (${child.ttl})` : '';
+        result += `${prefix}${connector}${child.nama}${spouseText}${ttlText}\n`;
+
+        const childPrefix = prefix + (isLast ? '    ' : '│   ');
+        result += buildAsciiTree(child.id, childPrefix);
+      });
+
+      return result;
+    }
+
+    function renderPdfTree() {
+      const roots = familyData.filter(m => !m.parentId);
+      let fullTree = '';
+
+      roots.forEach(root => {
+        const spouseText = root.pasangan ? ` & ${root.pasangan}` : '';
+        fullTree += `${root.nama || 'Leluhur Utama'}${spouseText}\n`;
+        fullTree += buildAsciiTree(root.id, '');
+      });
+
+      document.getElementById('ascii-tree-container').textContent = fullTree;
+    }
+
+    function renderPdfTable() {
+      const tbody = document.getElementById('pdf-table-body');
+      tbody.innerHTML = familyData.map((item, idx) => `
+        <tr class="${idx % 2 === 1 ? 'bg-emerald-50/40' : ''}">
+          <td class="border border-slate-800 px-2 py-1.5 text-center">${idx + 1}</td>
+          <td class="border border-slate-800 px-2 py-1.5 font-semibold text-slate-900">${item.nama || '-'}</td>
+          <td class="border border-slate-800 px-2 py-1.5">${item.ttl || '-'}</td>
+          <td class="border border-slate-800 px-2 py-1.5 text-center">${item.jk || '-'}</td>
+          <td class="border border-slate-800 px-2 py-1.5">${item.ayah || '-'}</td>
+          <td class="border border-slate-800 px-2 py-1.5">${item.ibu || '-'}</td>
+          <td class="border border-slate-800 px-2 py-1.5">${item.pasangan || '-'}</td>
+          <td class="border border-slate-800 px-2 py-1.5">${item.alamat || '-'}${item.telp ? ` (${item.telp})` : ''}</td>
+        </tr>
+      `).join('');
+    }
+
+    function printDocument(type) {
+      const printArea = document.getElementById('printable-area');
+      if (type === 'tree') {
+        renderPdfTree();
+        printArea.innerHTML = document.getElementById('pdf-tree-paper').outerHTML;
+      } else {
+        renderPdfTable();
+        printArea.innerHTML = document.getElementById('pdf-table-paper').outerHTML;
+      }
+      printArea.classList.remove('hidden');
+      window.print();
+      setTimeout(() => {
+        printArea.classList.add('hidden');
+      }, 500);
+    }
+
+    // ==================== EXPORT CSV & SPREADSHEET SYNC ====================
+    function exportToCSV() {
+      const headers = ['No', 'ID', 'ParentID', 'Nama_Lengkap', 'Tempat_Tanggal_Lahir', 'Nama_Ayah', 'Nama_Ibu', 'Pasangan', 'JK', 'Alamat', 'No_Telp'];
+      const rows = familyData.map((item, idx) => [
+        idx + 1,
+        `"${item.id}"`,
+        `"${item.parentId || ''}"`,
+        `"${item.nama || ''}"`,
+        `"${item.ttl || ''}"`,
+        `"${item.ayah || ''}"`,
+        `"${item.ibu || ''}"`,
+        `"${item.pasangan || ''}"`,
+        `"${item.jk || ''}"`,
+        `"${item.alamat || ''}"`,
+        `"${item.telp || ''}"`
+      ]);
+
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'Data_Silsilah_Keluarga_Lengkap.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('File CSV Spreadsheet berhasil diunduh');
+    }
+
+    function openScriptModal() {
+      updateGasCodeWithId();
+      document.getElementById('script-modal').classList.remove('hidden');
+    }
+
+    function closeScriptModal() {
+      document.getElementById('script-modal').classList.add('hidden');
+    }
+
+    function copyGasCode() {
+      const code = document.getElementById('gas-code-block').innerText;
+      const textarea = document.createElement('textarea');
+      textarea.value = code;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      showToast('Kode Code.gs berhasil disalin!');
+    }
+
+    async function syncWithSpreadsheet(silent = false) {
+      const urlInput = document.getElementById('gas-webapp-url').value.trim();
+      if (!urlInput) {
+        if (!silent) showToast('Masukkan URL Web App Google Apps Script terlebih dahulu');
+        return;
+      }
+      gasWebAppUrl = urlInput;
+
+      try {
+        if (!silent) showToast('Menghubungkan ke Google Spreadsheet...');
+        await fetch(gasWebAppUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'syncAll', records: familyData })
+        });
+        if (!silent) showToast('Data berhasil dikirim ke Google Spreadsheet!');
+      } catch (err) {
+        if (!silent) showToast('Gagal terhubung ke URL Spreadsheet');
+      }
+    }
+
+    // ==================== TOAST HELPER ====================
+    let toastTimeout;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = msg;
+      toast.classList.remove('opacity-0');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('opacity-0');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
